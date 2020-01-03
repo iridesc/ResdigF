@@ -1,39 +1,42 @@
 <template>
-  <b-nav class="text-center">
-    <b-container>
+
+    <b-container class="textCenter">
       <b-row>
-        <b-col sm="0"  >
-          <b-badge>{{ this.keywordAmount }}</b-badge>
-        </b-col >
-        <b-col sm="0">
-          <b-badge>{{ this.resAmount }}</b-badge>
-        </b-col>
-        <b-col>
-          Tasks:
-          <div v-if="tasks.length> 0">
+        <b-col v-if="tasks.length != 0">
+          <span v-for="task in tasks">
+            <b-progress v-if="task.status == 'Digging'">
+              <b-progress-bar :max="100" :value="task.progress" animated>{{
+                task.keyword
+              }}</b-progress-bar>
+            </b-progress>
             <b-badge
-              v-for="task in tasks"
-              :variant="task.style"
-            >{{ task.keyword }} {{ task.progress }}</b-badge>
-          </div>
-          <b-badge v-else>当前无任务</b-badge>
+              :variant="task.status == 'Waiting' ? 'info' : 'success'"
+              pill  
+              v-else
+            >
+              {{ task.keyword + " " + task.status }}
+            </b-badge>
+          </span>
         </b-col>
         <b-col>
-          Engines:
           <b-badge
             v-for="engine in engines"
             :variant="engine.isActive ? 'success' : 'secondary'"
-          >{{ engine.name }}</b-badge>
+            class="shadow"
+            pill
+
+            >{{ engine.name }}</b-badge
+          >
         </b-col>
       </b-row>
     </b-container>
-  </b-nav>
+
 </template>
 
 <script>
 export default {
   name: "StatusBar",
-  props: ["tasks", "engines", "keywordAmount", "resAmount"],
+  props: ["tasks", "engines"],
   data() {
     return {};
   }
@@ -41,5 +44,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
+<style scoped></style>

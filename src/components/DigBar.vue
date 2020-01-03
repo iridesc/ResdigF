@@ -1,20 +1,48 @@
 <template>
-  <b-container :class="resBoardData.open ? 'textCenter' : 'textCenter pageCenter'">
-    <b-row>
-      <b-col></b-col>
-      <b-col sm="10" md="8" lg="6">
-        <h1>Resdig</h1>
-        <b-input-group>
-          <b-form-input v-model="keyword" placeholder="请输入搜索关键词"></b-form-input>
-          <b-input-group-append>
-            <b-button @click="dig" variant="success">Dig</b-button>
-          </b-input-group-append>
-        </b-input-group>
-        <!-- <GuessList :keyword="keyword"></GuessList> -->
-      </b-col>
-      <b-col></b-col>
-    </b-row>
-  </b-container>
+  <div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <b-container class="textCenter">
+      <b-row>
+        <b-col></b-col>
+
+        <b-col sm="10" md="8" lg="6">
+          <h1>Resdig</h1>
+          <b-input-group>
+            <b-form-input
+              v-model="keyword"
+              class="shadow round"
+              placeholder="请输入搜索关键词"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button
+                v-if="!connecting"
+                @click="dig"
+                pill
+                class="shadow"
+                variant="success"
+                >Dig</b-button
+              >
+            </b-input-group-append>
+            <b-form-text>
+              <!-- <b-badge
+                v-for="task in tasks"
+                :variant="task.style"
+              >{{ task.keyword }} {{ task.progress }}</b-badge>-->
+            </b-form-text>
+          </b-input-group>
+          <!-- <GuessList :keyword="keyword"></GuessList> -->
+        </b-col>
+        <b-col></b-col>
+      </b-row>
+    </b-container>
+    <br />
+    <br />
+    <br />
+    <br />
+  </div>
 </template>
 
 <script>
@@ -25,13 +53,16 @@ export default {
   components: {
     GuessList
   },
-  props: ["resBoardData", "pushAlert"],
+  props: ["makeToast", "resBoardData", "api", "baseUrl"],
   methods: {
     dig() {
-      console.log("Dig clicked!", this.keyword);
+      this.resBoardData.open = false;
+      this.connecting = true;
       let KW = this.keyword;
+      this.makeToast("Connecting...", "正在连接。。。。", "info");
+
       this.axios
-        .post("api/", {
+        .post(this.api, {
           reason: "checkKeyword",
           keyword: KW
         })
@@ -41,66 +72,51 @@ export default {
           console.log(status);
 
           if (status == "recorded") {
-            // 已经收录
-            this.axios
-              .post("api/", {
-                reason: "getRess",
-                keyword: KW
-              })
-              .then(response => {
-                this.pushAlert('"' + KW + '"' + "已获取!", "success", 1);
-                this.resBoardData.ress = response.data.ress;
-                this.resBoardData.keyword = KW;
-                this.resBoardData.open = true;
-              })
-              .catch(error => this.pushAlert(error, "warning", 10));
+            let url = encodeURI("/movie/" + KW + "/");
+            window.location.href = url;
           } else if (status == "digging") {
-            this.pushAlert(
+            this.makeToast(
+              "Digging...",
               '"' + KW + '"' + "正在挖掘，请查看任务列表！",
-              "info",
-              5
+              "info"
             );
             console.log(status);
           } else if (status == "notRecord") {
             // 未收录
             this.axios
-              .post("api/", {
+              .post(this.api, {
                 reason: "dig",
                 keyword: KW
               })
               .then(response => {
-                this.pushAlert(
-                  '"' + KW + '"' + "未收录，但已加入任务列表，请查看！"
+                this.makeToast(
+                  "Digging...",
+                  '"' + KW + '"' + "未收录，但已加入任务列表，请查看！",
+                  "info"
                 );
                 this.resBoardData.open = false;
               })
               .catch(error =>
-                this.pushAlert("似乎你的关键字无效！", "warning", 2)
+                this.makeToast("Warning!", "似乎你的关键字无效！", "warning")
               );
           } else {
             // 未知的返回
-            pushAlert("似乎出了点问题....", "warning");
+            makeToast("Error!", "似乎出了点问题....", "danger");
           }
         })
-        .catch(error => console.log("--------\n", error)); // 失败的返回
+        .catch(error => console.log(error)); // 失败的返回
+      this.connecting = false;
+      // window.location.href = "https://baidu.com";
     }
   },
   data() {
     return {
-      keyword: ""
+      keyword: "",
+      connecting: false
     };
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.pageCenter {
-  position: absolute;
-  margin: auto;
-  width: 100%;
-  top: 25%;
-  left: 0;
-  right: 0;
-}
-</style>
+<style scoped></style>
