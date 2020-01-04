@@ -1,48 +1,42 @@
 <template>
-  <div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <b-container class="textCenter">
-      <b-row>
-        <b-col></b-col>
+  <b-container class="textCenter">
+    <b-row>
+      <b-col></b-col>
+      <b-col sm="10" md="8" lg="6">
+        <h1><a href="/">Resdig</a></h1>
+        <b-input-group>
+          <b-form-input
+            v-model="keyword"
+            class="shadow"
+            :state="checkKeyword"
+            placeholder="请输入关键词"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if="keyword.length != 0">
+            {{ keywordInvalidInfo }}
+          </b-form-invalid-feedback>
 
-        <b-col sm="10" md="8" lg="6">
-          <h1>Resdig</h1>
-          <b-input-group>
-            <b-form-input
-              v-model="keyword"
-              class="shadow round"
-              placeholder="请输入搜索关键词"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button
-                v-if="!connecting"
-                @click="dig"
-                pill
-                class="shadow"
-                variant="success"
-                >Dig</b-button
-              >
-            </b-input-group-append>
-            <b-form-text>
-              <!-- <b-badge
-                v-for="task in tasks"
-                :variant="task.style"
-              >{{ task.keyword }} {{ task.progress }}</b-badge>-->
-            </b-form-text>
-          </b-input-group>
-          <!-- <GuessList :keyword="keyword"></GuessList> -->
-        </b-col>
-        <b-col></b-col>
-      </b-row>
-    </b-container>
-    <br />
-    <br />
-    <br />
-    <br />
-  </div>
+          <b-input-group-append v-if="keywordValid">
+            <b-button @click="dig" class="shadow" variant="success"
+              >Dig</b-button
+            >
+          </b-input-group-append>
+        </b-input-group>
+        <!-- 用户的搜索历史 -->
+        <b-badge
+          v-for="userKeyword in userKeywords"
+          @click="
+            keyword = userKeyword;
+            dig();
+          "
+          class="speaceX"
+        >
+          {{ userKeyword }}
+        </b-badge>
+        <!-- <GuessList :keyword="keyword"></GuessList> -->
+      </b-col>
+      <b-col></b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -53,16 +47,21 @@ export default {
   components: {
     GuessList
   },
-  props: ["makeToast", "resBoardData", "api", "baseUrl"],
+  props: ["makeToast", "resBoardData"],
   methods: {
     dig() {
-      this.resBoardData.open = false;
-      this.connecting = true;
       let KW = this.keyword;
-      this.makeToast("Connecting...", "正在连接。。。。", "info");
+
+      let userKeywordIndex = this.userKeywords.indexOf(KW);
+      if (userKeywordIndex == -1) {
+        this.userKeywords.unshift(KW);
+      } else {
+        this.userKeywords.splice(userKeywordIndex, 1);
+        this.userKeywords.unshift(KW);
+      }
 
       this.axios
-        .post(this.api, {
+        .post('/api/', {
           reason: "checkKeyword",
           keyword: KW
         })
@@ -72,7 +71,7 @@ export default {
           console.log(status);
 
           if (status == "recorded") {
-            let url = encodeURI("/movie/" + KW + "/");
+            let url = "/movie/" + encodeURIComponent(KW) + "/";
             window.location.href = url;
           } else if (status == "digging") {
             this.makeToast(
@@ -84,7 +83,7 @@ export default {
           } else if (status == "notRecord") {
             // 未收录
             this.axios
-              .post(this.api, {
+              .post('/api/', {
                 reason: "dig",
                 keyword: KW
               })
@@ -94,7 +93,6 @@ export default {
                   '"' + KW + '"' + "未收录，但已加入任务列表，请查看！",
                   "info"
                 );
-                this.resBoardData.open = false;
               })
               .catch(error =>
                 this.makeToast("Warning!", "似乎你的关键字无效！", "warning")
@@ -105,14 +103,46 @@ export default {
           }
         })
         .catch(error => console.log(error)); // 失败的返回
-      this.connecting = false;
-      // window.location.href = "https://baidu.com";
+    }
+  },
+  computed: {
+    checkKeyword: function() {
+      if (this.keyword.length == 0 || this.keyword.length > 50) {
+        this.keywordValid = false;
+        this.keywordInvalidInfo = "Keyword length must in the range of 1-50.";
+      } else if (this.keyword.search(/\s\s+/) != -1) {
+        this.keywordValid = false;
+        this.keywordInvalidInfo = "Keyword shall not contain continuous space.";
+      } else if (this.keyword.search(/(^\s)|(\s$)/) != -1) {
+        this.keywordValid = false;
+        this.keywordInvalidInfo =
+          "Space shall not at the start/end of the keyword.";
+      } else {
+        this.keywordValid = true;
+      }
+      return this.keywordValid;
+    }
+  },
+  created: function() {
+    // 载入用户搜索历史
+    console.log(this.$cookies.get("userKeywords"));
+    if (this.$cookies.isKey("userKeywords")) {
+      this.userKeywords = JSON.parse(this.$cookies.get("userKeywords"));
+    } else {
+      this.$cookies.set("userKeywords", JSON.stringify([]));
+    }
+  },
+  watch: {
+    userKeywords: function() {
+      this.$cookies.set("userKeywords", JSON.stringify(this.userKeywords));
     }
   },
   data() {
     return {
       keyword: "",
-      connecting: false
+      keywordValid: false,
+      keywordInvalidInfo: "",
+      userKeywords: []
     };
   }
 };

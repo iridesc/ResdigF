@@ -4,17 +4,12 @@
     <h1 style="color:red">Load Error !</h1>
     <h3 style>
       Try refresh later / go to
-      <a :href="baseUrl">homepage</a>
+      <a href="/">homepage</a>
     </h3>
   </div>
   <!-- 正在载入 -->
   <div id="app" v-else-if="appLoadingValue < 100">
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <div class="textCenter speace">
+    <div class=" pageCenter textCenter speace">
       <h1>Loading...</h1>
       <b-progress
         :value="appLoadingValue"
@@ -25,20 +20,23 @@
   </div>
   <!-- 载入成功 -->
   <div id="app" v-else>
+    <!-- 状态栏 -->
     <StatusBar :tasks="tasks" :engines="engines"></StatusBar>
-
+    <!-- 搜索框 -->
     <DigBar
+      class="speaceY"
       :makeToast="makeToast"
-      :api="api"
+
       :resBoardData="resBoardData"
-      :baseUrl="baseUrl"
     ></DigBar>
+    <!-- 资源展示区域 -->
     <ResBoard
-      :api="api"
+      v-if="resBoardData.keyword != ''"
       :makeToast="makeToast"
       :resBoardData="resBoardData"
     ></ResBoard>
-    <HotRec :hots="hots" :baseUrl="baseUrl"></HotRec>
+    <!-- 推荐的外部链接 -->
+    <HotRec class="speace" :hots="hots"></HotRec>
 
     <SuspArea>
       <template v-slot>
@@ -62,7 +60,6 @@ import HelpBM from "./components/HelpBM";
 import MoreBM from "./components/MoreBM";
 import HotRec from "./components/HotRec";
 import ResBoard from "./components/ResBoard";
-
 import cp from "./components/cp";
 
 export default {
@@ -105,12 +102,12 @@ export default {
       .split("/");
     // console.log(location);
     if (location[1] == "movie") {
-      let kw = decodeURI(location[2]);
-      window.title = 'Resdig'+'-'+kw;
-      console.log(window.title);
-      
+      let kw = decodeURIComponent(location[2]);
+      window.title = "Resdig" + "-" + kw;
+      // console.log(window.title);
+
       this.axios
-        .post(this.api, {
+        .post('/api/', {
           reason: "getRess",
           keyword: kw
         })
@@ -120,7 +117,6 @@ export default {
           if (data.suc) {
             this.resBoardData.ress = data.ress;
             this.resBoardData.keyword = kw;
-    
           } else {
             this.loadError = true;
           }
@@ -133,7 +129,7 @@ export default {
     // staticData
     if (!this.loadError) {
       this.axios
-        .post(this.api, {
+        .post('/api/', {
           reason: "getStaticData"
         })
         .then(response => {
@@ -152,11 +148,11 @@ export default {
     if (!this.loadError) {
       setInterval(() => {
         this.axios
-          .post(this.api, {
+          .post('/api/', {
             reason: "getDynamicData"
           })
           .then(response => {
-            // console.log("DynamicData", response.data);
+            // console.log("DynamicData", JSON.stringify(response.data));
             this.tasks = response.data.tasks;
             this.engines = response.data.engines;
             this.msgs = response.data.msgs;
@@ -165,6 +161,11 @@ export default {
         this.appLoadingValue = 100;
       }, 2500);
     }
+  },
+  mounted() {
+    document
+      .querySelector("body")
+      .setAttribute("class", "bg textColor");
   },
   methods: {
     makeToast(title, content, variant = null) {
@@ -177,8 +178,6 @@ export default {
   },
   data() {
     return {
-      baseUrl: "http://localhost:8080",
-      api: "http://localhost:8080/api/",
       appLoadingValue: 0,
       appLoadMax: 100,
       loadError: false,
@@ -196,8 +195,7 @@ export default {
       //
       resBoardData: {
         keyword: "",
-      
-    
+
         ress: []
       }
     };
@@ -205,14 +203,23 @@ export default {
 };
 </script>
 <style>
+.bg {
+  background-color: darkslategray;
+}
+.textColor{
+    color: indianred;
+}
+.bgT{
+  background-color: cadetblue;
+}
 .speaceX {
-  margin-top: 5%;
-  margin-bottom: 5%;
+  margin-left: 2%;
+  margin-right: 2%;
 }
 
 .speaceY {
-  margin-top: 5%;
-  margin-bottom: 5%;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 .speace {

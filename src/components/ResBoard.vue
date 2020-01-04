@@ -22,7 +22,14 @@
       <br />
       <!-- table -->
       <b-row>
-        <b-col v-for="item in sortedRess" sm="auto" md="auto" lg="6" xl="6">
+        <b-col
+          v-for="item in sortedRess"
+          v-if="item.ress.length > 0"
+          sm="auto"
+          md="auto"
+          lg="6"
+          xl="6"
+        >
           <h3>{{ item.type + " : " }} {{ item.ress.length }}</h3>
 
           <b-table
@@ -30,12 +37,20 @@
             fixed
             striped
             hover
-            sticky-header ='800px'
+            sticky-header="800px"
             class="shadow"
             :items="item.ress"
             :fields="fields"
           >
             <template v-slot:cell(Action)="data">
+              <b-button
+                variant="secondary"
+                @click="data.item.jump()"
+                class="speaceX shadow"
+                size="sm"
+                pill
+                >原址</b-button
+              >
               <b-button
                 variant="success"
                 v-clipboard:copy="data.item.link"
@@ -45,14 +60,6 @@
                 size="sm"
                 pill
                 >复制</b-button
-              >
-              <b-button
-                variant="success"
-                @click="data.item.jump()"
-                class="speaceX shadow"
-                size="sm"
-                pill
-                >原址</b-button
               >
             </template>
             <template v-slot:cell(Filename)="data"
@@ -83,11 +90,11 @@
 <script>
 export default {
   name: "ResBoard",
-  props: ["resBoardData", "makeToast", "api"],
+  props: ["resBoardData", "makeToast",],
   methods: {
     redig() {
       this.axios
-        .post(this.api, {
+        .post('/api/', {
           reason: "dig",
           keyword: this.resBoardData.keyword
         })
@@ -97,29 +104,33 @@ export default {
           if (data.suc) {
             console.log("SUC");
             this.makeToast(
-              this.resBoardData.keyword + " 已加入任务列表！",
+              "Success!",
+              this.resBoardData.keyword + "已加入任务列表！",
               "success"
             );
           } else {
             if (data.reason == "inTasks") {
               this.makeToast(
-                this.resBoardData.keyword + " 已在任务列表！请关注任务列表！",
-                "warning"
+                "In tasks!",
+                this.resBoardData.keyword + "已在任务列表！请关注任务列表！",
+                "info"
               );
             } else if (data.reason == "timeLocked") {
               this.makeToast(
-                this.resBoardData.keyword +
-                  " redig fail! Dou to: 上次挖掘据今还未超出一天！",
+                "Rejected!",
+                this.resBoardData.keyword + "上次挖掘据今还未超出一天！",
                 "warning"
               );
             } else if (data.reason == "keywordInvalid") {
               this.makeToast(
-                this.resBoardData.keyword + " redig fail! Dou to: 关键字无效！",
+                "Error!",
+                this.resBoardData.keyword + "关键字无效！",
                 "danger"
               );
             } else {
               this.makeToast(
-                this.resBoardData.keyword + " redig fail! Dou to: 未知的错误",
+                "Error!",
+                this.resBoardData.keyword + "未知的错误",
                 "danger"
               );
             }
@@ -251,7 +262,7 @@ export default {
       }
       // 分类装载
       if (element.type == "thunder") {
-        element._rowVariant = "warning";
+        element._rowVariant = "primary";
         this.sortedRess.thunder.ress.push(element);
         this.sortedRess.thunder.count += 1;
       } else if (element.type == "magnet") {
@@ -259,7 +270,7 @@ export default {
         this.sortedRess.magnet.ress.push(element);
         this.sortedRess.magnet.count += 1;
       } else if (element.type == "ed2k") {
-        element._rowVariant = "danger";
+        element._rowVariant = "info";
         this.sortedRess.ed2k.ress.push(element);
         this.sortedRess.ed2k.count += 1;
       } else {
