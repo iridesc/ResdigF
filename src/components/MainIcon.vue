@@ -2,10 +2,10 @@
   <div>
     <b-img
       id="mainIcon"
-      class="shadow"
+      class="shadow mainIcon"
       rounded="circle"
       center
-      src="https://raw.githubusercontent.com/iridesc/ocolabstatic/master/resdig/img/favicon.ico"
+      :src="require('../assets/logo.svg')"
       alt=""
     >
     </b-img>
