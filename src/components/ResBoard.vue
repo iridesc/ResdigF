@@ -15,7 +15,7 @@
             size="sm"
             variant="success"
             @click="redig"
-            >redig</b-button
+            >Re Dig</b-button
           >
         </b-col>
       </b-row>
@@ -102,14 +102,14 @@ export default {
               reason: "dig",
               keyword: this.resBoardData.keyword
             },
-            PASSWORD
+            this.PASSWORD
           )
         )
         .then(response => {
-          let data = response.data;
-          console.log(data);
+          let data = crypto.decrypt(response.data,this.PASSWORD);
+          // console.log(data);
           if (data.suc) {
-            console.log("SUC");
+            // console.log("SUC");
             this.makeToast(
               "Success!",
               this.resBoardData.keyword + "已加入任务列表！",
@@ -281,7 +281,7 @@ export default {
         this.sortedRess.ed2k.ress.push(element);
         this.sortedRess.ed2k.count += 1;
       } else {
-        console.log("unknow type");
+        // console.log("unknow type");
       }
     }
 

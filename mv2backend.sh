@@ -1,7 +1,7 @@
 #/bin/bash
-rm ../ResdigB/resdig/templates/index.html
-cp ./dist/index.html ../ResdigB/resdig/templates
+rm ../ocolab/resdig/templates/index.html
+cp ./dist/index.html ../ocolab/resdig/templates
 
-rm -r ../ResdigB/resdig/static/*
+rm -r ../ocolab/resdig/static/*
 
-cp -r ./dist/static/* ../ResdigB/resdig/static/
+cp -r ./dist/static/* ../ocolab/resdig/static/

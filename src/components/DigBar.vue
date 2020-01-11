@@ -3,7 +3,6 @@
     <b-row>
       <b-col></b-col>
       <b-col sm="10" md="8" lg="6">
-        
         <b-input-group>
           <b-form-input
             v-model="keyword"
@@ -48,7 +47,7 @@ export default {
   components: {
     GuessList
   },
-  props: ["makeToast", "resBoardData",'PASSWORD'],
+  props: ["makeToast", "resBoardData", "PASSWORD"],
   methods: {
     dig() {
       let KW = this.keyword;
@@ -73,9 +72,9 @@ export default {
           )
         )
         .then(response => {
-          let data = response.data;
+          let data = crypto.decrypt(response.data,this.PASSWORD);
           let status = data.status;
-          console.log(status);
+          // console.log(status);
 
           if (status == "recorded") {
             let url = "/movie/" + encodeURIComponent(KW) + "/";
@@ -86,7 +85,7 @@ export default {
               '"' + KW + '"' + "正在挖掘，请查看任务列表！",
               "info"
             );
-            console.log(status);
+            // console.log(status);
           } else if (status == "notRecord") {
             // 未收录
             this.axios
@@ -111,11 +110,12 @@ export default {
                 this.makeToast("Warning!", "似乎你的关键字无效！", "warning")
               );
           } else {
+            // console.log(JSON.stringify(data));
             // 未知的返回
-            makeToast("Error!", "似乎出了点问题....", "danger");
+            this.makeToast("Error!", "似乎出了点问题....", "danger");
           }
         })
-        .catch(error => console.log(error)); // 失败的返回
+        .catch(error => this.makeToast("Error!", "似乎出了点问题....", "danger")); // 失败的返回
     }
   },
   computed: {
@@ -138,7 +138,7 @@ export default {
   },
   created: function() {
     // 载入用户搜索历史
-    console.log(this.$cookies.get("userKeywords"));
+    // console.log(this.$cookies.get("userKeywords"));
     if (this.$cookies.isKey("userKeywords")) {
       this.userKeywords = JSON.parse(this.$cookies.get("userKeywords"));
     } else {
