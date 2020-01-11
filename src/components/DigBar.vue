@@ -3,7 +3,7 @@
     <b-row>
       <b-col></b-col>
       <b-col sm="10" md="8" lg="6">
-        <h1><a href="/">Resdig</a></h1>
+        
         <b-input-group>
           <b-form-input
             v-model="keyword"
@@ -41,13 +41,14 @@
 
 <script>
 import GuessList from "./GuessList";
+import crypto from "../js/crypto";
 
 export default {
   name: "DigBar",
   components: {
     GuessList
   },
-  props: ["makeToast", "resBoardData"],
+  props: ["makeToast", "resBoardData",'PASSWORD'],
   methods: {
     dig() {
       let KW = this.keyword;
@@ -61,10 +62,16 @@ export default {
       }
 
       this.axios
-        .post('/api/', {
-          reason: "checkKeyword",
-          keyword: KW
-        })
+        .post(
+          "/api/",
+          crypto.encrypt(
+            {
+              reason: "checkKeyword",
+              keyword: KW
+            },
+            this.PASSWORD
+          )
+        )
         .then(response => {
           let data = response.data;
           let status = data.status;
@@ -83,10 +90,16 @@ export default {
           } else if (status == "notRecord") {
             // 未收录
             this.axios
-              .post('/api/', {
-                reason: "dig",
-                keyword: KW
-              })
+              .post(
+                "/api/",
+                crypto.encrypt(
+                  {
+                    reason: "dig",
+                    keyword: KW
+                  },
+                  this.PASSWORD
+                )
+              )
               .then(response => {
                 this.makeToast(
                   "Digging...",

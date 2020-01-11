@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>resdig</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+      name="description"
+      content="Resdig资源挖掘机，优质资源收录站，你要的高清电影，视频，ed2k,Magnet,Thunder,百度网盘资源都在这里！自动爬取，海量资源！"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://raw.githubusercontent.com/iridesc/ocolabstatic/master/resdig/img/favicon.ico"
+    />
+    <title>Resdig {{ keyword }}</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <h1>{{ keyword }}</h1>
+      {% for rec in recs %}
+      <li>
+        <h2>
+          {{ rec.keyword }}
+        </h2>
+        <a href="/movie/{{ rec.keyword }}/"> 查看资源 </a>
+        <p>ed2k Magnet Thunder 种子 磁力链接</p>
+      </li>
+      {% endfor %}
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

@@ -88,16 +88,23 @@
 </template>
 
 <script>
+import crypto from "../js/crypto";
 export default {
   name: "ResBoard",
-  props: ["resBoardData", "makeToast",],
+  props: ["resBoardData", "makeToast", "PASSWORD"],
   methods: {
     redig() {
       this.axios
-        .post('/api/', {
-          reason: "dig",
-          keyword: this.resBoardData.keyword
-        })
+        .post(
+          "/api/",
+          crypto.encrypt(
+            {
+              reason: "dig",
+              keyword: this.resBoardData.keyword
+            },
+            PASSWORD
+          )
+        )
         .then(response => {
           let data = response.data;
           console.log(data);
