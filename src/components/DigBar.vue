@@ -31,7 +31,27 @@
         >
           {{ userKeyword }}
         </b-badge>
-        <!-- <GuessList :keyword="keyword"></GuessList> -->
+        <!-- Guss list -->
+        <b-list-group>
+          <b-list-group-item
+            class="shadow textColor bgT speaceX"
+            variant="outline-info"
+            v-for="(item, index) in this.nowSugs"
+            :key="index"
+            @click="keyword = item"
+         
+          >
+            {{ item }}
+          </b-list-group-item>
+          <!-- <b-list-group-item
+            class="bgT"
+            v-for="(item, index) in this.nowSugs"
+            :key="index"
+            @click="keyword = item"
+          >
+            {{ item }}
+          </b-list-group-item> -->
+        </b-list-group>
       </b-col>
       <b-col></b-col>
     </b-row>
@@ -39,15 +59,12 @@
 </template>
 
 <script>
-import GuessList from "./GuessList";
 import crypto from "../js/crypto";
 
 export default {
   name: "DigBar",
-  components: {
-    GuessList
-  },
-  props: ["makeToast", "resBoardData", "PASSWORD"],
+  
+  props: ["makeToast", "resBoardData", "PASSWORD", "sugs"],
   methods: {
     dig() {
       let KW = this.keyword;
@@ -72,7 +89,7 @@ export default {
           )
         )
         .then(response => {
-          let data = crypto.decrypt(response.data,this.PASSWORD);
+          let data = crypto.decrypt(response.data, this.PASSWORD);
           let status = data.status;
           // console.log(status);
 
@@ -115,7 +132,9 @@ export default {
             this.makeToast("Error!", "似乎出了点问题....", "danger");
           }
         })
-        .catch(error => this.makeToast("Error!", "似乎出了点问题....", "danger")); // 失败的返回
+        .catch(error =>
+          this.makeToast("Error!", "似乎出了点问题....", "danger")
+        ); // 失败的返回
     }
   },
   computed: {
@@ -148,6 +167,20 @@ export default {
   watch: {
     userKeywords: function() {
       this.$cookies.set("userKeywords", JSON.stringify(this.userKeywords));
+    },
+    keyword: function() {
+      this.nowSugs = [];
+      if (this.keyword != "") {
+        this.sugs.forEach(element => {
+          if (
+            this.nowSugs.indexOf(element) < 0 &&
+            element.indexOf(this.keyword) >= 0
+          ) {
+            this.nowSugs.push(element);
+            console.log(this.nowSugs);
+          }
+        });
+      }
     }
   },
   data() {
@@ -155,7 +188,8 @@ export default {
       keyword: "",
       keywordValid: false,
       keywordInvalidInfo: "",
-      userKeywords: []
+      userKeywords: [],
+      nowSugs: []
     };
   }
 };
