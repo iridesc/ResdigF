@@ -102,10 +102,11 @@ export default {
       .toString()
       .split("//")[1]
       .split("/");
-
+    // console.log(JSON.stringify(location));
     if (location[1] == "movie") {
       let kw = decodeURIComponent(location[2]);
       window.title = "Resdig" + "-" + kw;
+      // console.log(kw);
       this.axios
         .post(
           "/api/",
@@ -124,14 +125,14 @@ export default {
             this.resBoardData.ress = data.ress;
             this.resBoardData.keyword = kw;
           } else {
-            // console.log("load error");
+            // console.log("load error in getLocation->movie->then");
             // console.log(kw);
             // console.log(data);
             this.loadError = true;
           }
         })
         .catch(error => {
-          // console.log("load error");
+          // console.log("load error in getLocation->movie->catch");
           // console.log(error);
           this.loadError = true;
         });
@@ -161,8 +162,8 @@ export default {
           this.appLoadingValue += 60;
         })
         .catch(error => {
+          // console.log("load error in getStatic->catch!");
           // console.log(error);
-          // console.log("load error");
           this.loadError = true;
         });
     }

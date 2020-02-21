@@ -177,7 +177,7 @@ export default {
             element.indexOf(this.keyword) >= 0
           ) {
             this.nowSugs.push(element);
-            console.log(this.nowSugs);
+            // console.log(this.nowSugs);
           }
         });
       }
