@@ -94,7 +94,7 @@ export default {
 
     // background
     document.querySelector("body").setAttribute("class", "bg textColor");
-    this.appLoadingValue = 10;
+    this.appLoadingValue += 5;
     // console.log(this.appLoadingValue);
 
     // location
@@ -136,7 +136,7 @@ export default {
           this.loadError = true;
         });
     }
-    this.appLoadingValue = 30;
+    this.appLoadingValue += 20;
 
     // staticData
     if (!this.loadError) {
@@ -158,7 +158,7 @@ export default {
           this.donors = data.donors;
           this.resAmount = data.resAmount;
           this.keywordAmount = data.keywordAmount;
-          this.appLoadingValue = 60;
+          this.appLoadingValue += 60;
         })
         .catch(error => {
           // console.log(error);
@@ -169,6 +169,7 @@ export default {
 
     // dynamicData
     if (!this.loadError) {
+      this.appLoadingValue += 30;
       setInterval(() => {
         this.axios
           .post(
@@ -186,7 +187,6 @@ export default {
             this.engines = data.engines;
             this.msgs = data.msgs;
           });
-        this.appLoadingValue = 100;
       }, 2500);
     }
   },
