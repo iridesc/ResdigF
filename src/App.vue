@@ -154,12 +154,14 @@ export default {
         .then(response => {
           let data = crypto.decrypt(response.data, this.PASSWORD);
           this.hots = this.random(data.hots);
-          this.sugs = data.sugs;
+          this.sugs = data.sugs.split('*');
           this.casts = data.casts;
           this.donors = data.donors;
           this.resAmount = data.resAmount;
           this.keywordAmount = data.keywordAmount;
           this.appLoadingValue += 40;
+          console.log(data.sugs.split('*'));
+          
         })
         .catch(error => {
           // console.log("load error in getStatic->catch!");
