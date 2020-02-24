@@ -1,6 +1,13 @@
 <template>
   <!-- 页面载入出错 -->
   <div id="app" class="textCenter" v-if="loadError">
+    <b-img
+      class="shadow mainIcon"
+      rounded="circle"
+      center
+      :src="require('./assets/logo.s.svg')"
+      alt=""
+    ></b-img>
     <h1 style="color:red">Load Error !</h1>
     <h3 style>
       Try refresh later / go to
@@ -14,7 +21,7 @@
         class="shadow mainIcon"
         rounded="circle"
         center
-        :src="require('./assets/logo.svg')"
+        :src="require('./assets/logo.s.svg')"
         alt=""
       >
       </b-img>
@@ -154,14 +161,13 @@ export default {
         .then(response => {
           let data = crypto.decrypt(response.data, this.PASSWORD);
           this.hots = this.random(data.hots);
-          this.sugs = data.sugs.split('*');
+          this.sugs = data.sugs.split("*");
           this.casts = data.casts;
           this.donors = data.donors;
           this.resAmount = data.resAmount;
           this.keywordAmount = data.keywordAmount;
           this.appLoadingValue += 40;
-          console.log(data.sugs.split('*'));
-          
+          console.log(data.sugs.split("*"));
         })
         .catch(error => {
           // console.log("load error in getStatic->catch!");
@@ -283,7 +289,7 @@ export default {
   /* padding: 5px; */
 }
 .fullRound {
-  border-radius: 50%
+  border-radius: 50%;
 }
 
 .textCenter {

@@ -1,14 +1,13 @@
 <template>
   <div>
-    <b-img
-      id="mainIcon"
+  
+      <b-img
       class="shadow mainIcon"
       rounded="circle"
       center
-      :src="require('../assets/logo.svg')"
+      :src="require('../assets/logo.s.svg')"
       alt=""
-    >
-    </b-img>
+    ></b-img>
 
     <b-popover
       target="mainIcon"
