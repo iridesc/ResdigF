@@ -47,9 +47,6 @@ module.exports = {
     proxyTable: {
       '/api/*': {
         target: 'http://127.0.0.1:8000', // 你请求的第三方接口
-      },
-      '/j/*': {
-        target: 'http://movie.douban.com', // 你请求的第三方接口
       }
     },
 

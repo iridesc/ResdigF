@@ -35,13 +35,15 @@
   <body>
     <div id="app">
       <h1>{{ keyword }}</h1>
+      <p>ed2k Magnet Thunder 种子 磁力链接</p>
+
       {% for rec in recs %}
       <li>
-        <h2>
-          {{ rec.keyword }}
-        </h2>
-        <a href="/movie/{{ rec.keyword }}/"> 查看资源 </a>
-        <p>ed2k Magnet Thunder 种子 磁力链接</p>
+        <a href="/movie/{{ rec.keyword }}/">
+          <h2>
+            {{ rec.keyword }}
+          </h2>
+        </a>
       </li>
       {% endfor %}
     </div>

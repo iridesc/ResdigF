@@ -109,7 +109,6 @@ export default {
       .toString()
       .split("//")[1]
       .split("/");
-    // console.log(JSON.stringify(location));
     if (location[1] == "movie") {
       let kw = decodeURIComponent(location[2]);
       window.title = "Resdig" + "-" + kw;
