@@ -1,30 +1,12 @@
-# resdig
+# resdigF
 
 > A Vue.js project for [Resdig.net](https://resdig.net) 
 
-## Build Setup
 
-``` bash
-# install dependencies
-npm install
+# Resdig
 
-# serve with hot reload at localhost:8080
-npm run dev
+[Resdig.net](https://resdig.net) 是一个分布式的网络资源收集站.
 
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+ - 后端: [ResdigB](https://github.com/iridesc/ResdigB)
+ - web端: [ResdigF](https://github.com/iridesc/ResdigF)
+ - 爬虫: [enginex](https://github.com/iridesc/enginex)
