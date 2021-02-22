@@ -1,6 +1,6 @@
 # resdig
 
-> A Vue.js project
+> A Vue.js project for [Resdig.net](https://resdig.net) 
 
 ## Build Setup
 
