@@ -1,4 +1,4 @@
-# resdigF
+# ResdigF
 
 > A Vue.js project for [Resdig.net](https://resdig.net) 
 
